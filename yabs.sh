@@ -1,5 +1,5 @@
 #!/bin/bash
-# VPS Info Script (YABS style minimal)
+# VPS Info Script (YABS style minimal - fixed align)
 
 clear
 echo "########################################"
@@ -16,7 +16,10 @@ echo
 UPTIME=$(uptime -p | sed 's/up //')
 CPU_MODEL=$(lscpu | grep 'Model name' | sed 's/Model name:\s*//')
 CPU_CORES=$(nproc)
-CPU_FREQ=$(lscpu | awk -F: '/CPU MHz/ {printf "%.0f MHz\n", $2; exit}')
+CPU_FREQ=$(lscpu | awk -F: '/CPU max MHz/ {printf "%.0f MHz", $2}' | xargs)
+if [ -z "$CPU_FREQ" ]; then
+  CPU_FREQ=$(lscpu | awk -F: '/CPU MHz/ {printf "%.0f MHz", $2; exit}' | xargs)
+fi
 RAM_TOTAL=$(free -h --si | awk '/Mem:/ {print $2}')
 DISK_TOTAL=$(df -h --output=size / | tail -n1)
 DISTRO=$(lsb_release -d 2>/dev/null | cut -f2-)
@@ -40,17 +43,17 @@ fi
 
 echo "Basic System Information:"
 echo "-------------------------"
-echo "Uptime        : $UPTIME"
-echo "Processor     : $CPU_MODEL"
-echo "CPU cores     : $CPU_CORES @ $CPU_FREQ"
-echo "AES-NI        : $AES"
-echo "VM-x/AMD-V    : $VMX"
-echo "RAM           : $RAM_TOTAL"
-echo "Disk          : $DISK_TOTAL"
-echo "Distro        : $DISTRO"
-echo "Kernel        : $KERNEL"
-echo "VM Type       : $VM_TYPE"
-echo "IPv4/IPv6     : $IPV4 / $IPV6"
+printf "%-13s : %s\n" "Uptime" "$UPTIME"
+printf "%-13s : %s\n" "Processor" "$CPU_MODEL"
+printf "%-13s : %s\n" "CPU cores" "$CPU_CORES @ $CPU_FREQ"
+printf "%-13s : %s\n" "AES-NI" "$AES"
+printf "%-13s : %s\n" "VM-x/AMD-V" "$VMX"
+printf "%-13s : %s\n" "RAM" "$RAM_TOTAL"
+printf "%-13s : %s\n" "Disk" "$DISK_TOTAL"
+printf "%-13s : %s\n" "Distro" "$DISTRO"
+printf "%-13s : %s\n" "Kernel" "$KERNEL"
+printf "%-13s : %s\n" "VM Type" "$VM_TYPE"
+printf "%-13s : %s / %s\n" "IPv4/IPv6" "$IPV4" "$IPV6"
 echo
 
 # =============================
@@ -65,8 +68,8 @@ COUNTRY=$(curl -s ipinfo.io/country)
 
 echo "Network Information:"
 echo "-------------------------"
-echo "ASN      : $HOSTNAME"
-echo "ISP           : $ISP"
-echo "Hostname           : $ASN"
-echo "Location      : $LOCATION"
-echo "Country       : $COUNTRY"
+printf "%-13s : %s\n" "Hostname" "$HOSTNAME"
+printf "%-13s : %s\n" "ISP" "$ISP"
+printf "%-13s : %s\n" "ASN" "$ASN"
+printf "%-13s : %s\n" "Location" "$LOCATION"
+printf "%-13s : %s\n" "Country" "$COUNTRY"
