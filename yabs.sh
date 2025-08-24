@@ -65,8 +65,8 @@ COUNTRY=$(curl -s ipinfo.io/country)
 
 echo "Network Information:"
 echo "-------------------------"
-echo "Hostname      : $HOSTNAME"
+echo "ASN      : $HOSTNAME"
 echo "ISP           : $ISP"
-echo "ASN           : $ASN"
+echo "Hostname           : $ASN"
 echo "Location      : $LOCATION"
 echo "Country       : $COUNTRY"
